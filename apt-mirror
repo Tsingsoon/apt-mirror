@@ -602,6 +602,10 @@ sub find_metadata_in_release
                                 (
                                     $filename =~ m{^${component_regex}/source/Sources${compressed_extension_regex}}
                                 ) or (
+                                    $filename =~ m{^${component_regex}/source/Release}
+                                ) or (
+                                    $filename =~ m{^${component_regex}/source/Source}
+                                ) or (
                                     $filename =~ m{^${component_regex}/Contents-source${compressed_extension_regex}}
                                 )
                             )
@@ -939,8 +943,22 @@ foreach (@config_binaries)
         my $component;
         foreach $component (@components)
         {
-            process_index( $uri, "/dists/$distribution/$component/binary-$arch/Packages" );
-            process_index( $uri, "/dists/$distribution/$component/binary-all/Packages", 1 );
+            if(
+                (
+                    $uri eq 'http://packages.trafficmanager.net/debian/debian'
+                ) or (
+                    $uri eq 'http://packages.trafficmanager.net/debian/debian-security'
+                )
+            )
+            {
+                process_index( $uri, "/dists/$distribution/$component/binary-amd64/Packages" );
+                process_index( $uri, "/dists/$distribution/$component/binary-all/Packages", 1 );
+            }
+            else
+            {
+                process_index( $uri, "/dists/$distribution/$component/binary-$arch/Packages" );
+                process_index( $uri, "/dists/$distribution/$component/binary-all/Packages", 1 );
+            }
         }
     }
     else
